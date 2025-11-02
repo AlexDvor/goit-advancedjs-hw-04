@@ -3,6 +3,8 @@ import { API } from './js/pixabay-api';
 import { createImgCard } from './js/render-functions';
 import iziToast from 'izitoast';
 
+let lightbox = null;
+
 const refs = {
   form: document.querySelector('.form'),
   galleryList: document.querySelector('.gallery'),
@@ -46,6 +48,18 @@ const getHeightEl = () => {
   return height;
 };
 
+const initOrRefreshLightbox = () => {
+  if (!lightbox) {
+    lightbox = new SimpleLightbox('.gallery-link', {
+      captionsData: 'alt',
+      captionDelay: 250,
+      overlayOpacity: 0.9,
+    });
+  } else {
+    lightbox.refresh();
+  }
+};
+
 const onClickLoadMoreBtn = async e => {
   API.incrementPage();
 
@@ -71,11 +85,7 @@ const onClickLoadMoreBtn = async e => {
       behavior: 'smooth',
     });
 
-    new SimpleLightbox('.gallery-link', {
-      captionsData: 'alt',
-      captionDelay: 250,
-      overlayOpacity: 0.9,
-    });
+    initOrRefreshLightbox();
 
     if (totalHits === quantityEl) {
       messageForUser(
@@ -129,11 +139,7 @@ const onSubmitBtn = async e => {
       addLoadMoreBtn();
     }
 
-    new SimpleLightbox('.gallery-link', {
-      captionsData: 'alt',
-      captionDelay: 250,
-      overlayOpacity: 0.9,
-    });
+    initOrRefreshLightbox();
   } catch (error) {
     messageForUser(error.message, 'error');
     refs.galleryList.innerHTML = '';
