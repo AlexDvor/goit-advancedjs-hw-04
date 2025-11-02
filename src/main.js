@@ -29,21 +29,20 @@ const messageForUser = (ms, type) => {
   }
 };
 
+const removeLoadMoreBtn = () => {
+  refs.loadMoreBtn.classList.add('inactive');
+  refs.loadMoreBtn.removeEventListener('click', onClickLoadMoreBtn);
+};
+const addLoadMoreBtn = () => {
+  refs.loadMoreBtn.classList.remove('inactive');
+  refs.loadMoreBtn.addEventListener('click', onClickLoadMoreBtn);
+};
+
 const onClickLoadMoreBtn = async e => {
   API.incrementPage();
-  const quantityEl = refs.galleryList.children.length;
+
   try {
     const { hits, totalHits } = await API.getPhotoByQuery(API.queryField);
-
-    if (totalHits === quantityEl) {
-      messageForUser(
-        `We're sorry, but you've reached the end of search results.`,
-        'error'
-      );
-      refs.loadMoreBtn.classList.add('inactive');
-      refs.loadMoreBtn.removeEventListener('click', onClickLoadMoreBtn);
-      return;
-    }
 
     if (hits.length === 0) {
       messageForUser(
@@ -55,12 +54,24 @@ const onClickLoadMoreBtn = async e => {
 
     const createGallery = hits.map(item => createImgCard(item)).join('');
     refs.galleryList.insertAdjacentHTML('beforeend', createGallery);
+
+    const quantityEl = refs.galleryList.children.length;
+
     new SimpleLightbox('.gallery-link', {
       captionsData: 'alt',
       captionDelay: 250,
       overlayOpacity: 0.9,
     });
+
+    if (totalHits === quantityEl) {
+      messageForUser(
+        `We're sorry, but you've reached the end of search results.`,
+        'warning'
+      );
+      removeLoadMoreBtn();
+    }
   } catch (error) {
+    messageForUser(error.message, 'error');
     console.log(error);
   }
 };
@@ -96,8 +107,7 @@ const onSubmitBtn = async e => {
     const createGallery = hits.map(item => createImgCard(item)).join('');
 
     refs.galleryList.innerHTML = createGallery;
-    refs.loadMoreBtn.classList.remove('inactive');
-    refs.loadMoreBtn.addEventListener('click', onClickLoadMoreBtn);
+    addLoadMoreBtn();
 
     new SimpleLightbox('.gallery-link', {
       captionsData: 'alt',
@@ -105,6 +115,9 @@ const onSubmitBtn = async e => {
       overlayOpacity: 0.9,
     });
   } catch (error) {
+    messageForUser(error.message, 'error');
+    refs.galleryList.innerHTML = '';
+    removeLoadMoreBtn();
     console.log(error);
   } finally {
     refs.loader.classList.remove('is-loaded');
