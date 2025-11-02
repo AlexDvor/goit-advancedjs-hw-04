@@ -79,8 +79,8 @@ const onSubmitBtn = async e => {
     return;
   }
 
-  refs.loader.classList.add('is-loaded');
   API.resetPage();
+  refs.loader.classList.add('is-loaded');
 
   try {
     const { hits } = await API.getPhotoByQuery(searchField);
