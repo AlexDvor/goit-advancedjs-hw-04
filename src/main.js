@@ -5,7 +5,7 @@ import iziToast from 'izitoast';
 
 const refs = {
   form: document.querySelector('.form'),
-  imgWrap: document.querySelector('.gallery'),
+  galleryList: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
   loadMoreBtn: document.querySelector('.js-load-more-btn'),
 };
@@ -31,10 +31,19 @@ const messageForUser = (ms, type) => {
 
 const onClickLoadMoreBtn = async e => {
   API.incrementPage();
+  const quantityEl = refs.galleryList.children.length;
   try {
-    const { hits, total, totalHits } = await API.getPhotoByQuery(
-      API.queryField
-    );
+    const { hits, totalHits } = await API.getPhotoByQuery(API.queryField);
+
+    if (totalHits === quantityEl) {
+      messageForUser(
+        `We're sorry, but you've reached the end of search results.`,
+        'error'
+      );
+      refs.loadMoreBtn.classList.add('inactive');
+      refs.loadMoreBtn.removeEventListener('click', onClickLoadMoreBtn);
+      return;
+    }
 
     if (hits.length === 0) {
       messageForUser(
@@ -45,7 +54,7 @@ const onClickLoadMoreBtn = async e => {
     }
 
     const createGallery = hits.map(item => createImgCard(item)).join('');
-    refs.imgWrap.insertAdjacentHTML('beforeend', createGallery);
+    refs.galleryList.insertAdjacentHTML('beforeend', createGallery);
     new SimpleLightbox('.gallery-link', {
       captionsData: 'alt',
       captionDelay: 250,
@@ -74,7 +83,7 @@ const onSubmitBtn = async e => {
   API.resetPage();
 
   try {
-    const { hits, total, totalHits } = await API.getPhotoByQuery(searchField);
+    const { hits } = await API.getPhotoByQuery(searchField);
 
     if (hits.length === 0) {
       messageForUser(
@@ -86,7 +95,7 @@ const onSubmitBtn = async e => {
 
     const createGallery = hits.map(item => createImgCard(item)).join('');
 
-    refs.imgWrap.innerHTML = createGallery;
+    refs.galleryList.innerHTML = createGallery;
     refs.loadMoreBtn.classList.remove('inactive');
     refs.loadMoreBtn.addEventListener('click', onClickLoadMoreBtn);
 
