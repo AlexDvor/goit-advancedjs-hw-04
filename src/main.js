@@ -1,5 +1,5 @@
 import SimpleLightbox from 'simplelightbox';
-import { collection } from './js/pixabay-api';
+import { API } from './js/pixabay-api';
 import { createImgCard } from './js/render-functions';
 import iziToast from 'izitoast';
 
@@ -30,11 +30,10 @@ const messageForUser = (ms, type) => {
 };
 
 const onClickLoadMoreBtn = async e => {
-  collection.incrementPage();
-  console.log(collection.queryField);
+  API.incrementPage();
   try {
-    const { hits, total, totalHits } = await collection.getPhotoByQuery(
-      collection.queryField
+    const { hits, total, totalHits } = await API.getPhotoByQuery(
+      API.queryField
     );
 
     if (hits.length === 0) {
@@ -52,7 +51,9 @@ const onClickLoadMoreBtn = async e => {
       captionDelay: 250,
       overlayOpacity: 0.9,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const onSubmitBtn = async e => {
@@ -70,11 +71,10 @@ const onSubmitBtn = async e => {
   }
 
   refs.loader.classList.add('is-loaded');
+  API.resetPage();
 
   try {
-    const { hits, total, totalHits } = await collection.getPhotoByQuery(
-      searchField
-    );
+    const { hits, total, totalHits } = await API.getPhotoByQuery(searchField);
 
     if (hits.length === 0) {
       messageForUser(

@@ -23,6 +23,10 @@ class Pixabay {
     this.currentPage++;
   }
 
+  resetPage() {
+    this.currentPage = 1;
+  }
+
   async getPhotoByQuery(query) {
     this.queryField = query;
     const response = await axios.get('', {
@@ -33,4 +37,4 @@ class Pixabay {
   }
 }
 
-export const collection = new Pixabay();
+export const API = new Pixabay();
