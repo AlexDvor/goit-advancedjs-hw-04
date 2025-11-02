@@ -8,6 +8,7 @@ const refs = {
   galleryList: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
   loadMoreBtn: document.querySelector('.js-load-more-btn'),
+  card: document.querySelector('.gallery-item'),
 };
 
 const messageForUser = (ms, type) => {
@@ -44,7 +45,7 @@ const onClickLoadMoreBtn = async e => {
   try {
     const { hits, totalHits } = await API.getPhotoByQuery(API.queryField);
 
-    if (hits.length === 0) {
+    if (hits.length === 0 && totalHits === 0) {
       messageForUser(
         'Sorry, there are no images matching your search query. Please try again!',
         'error'
@@ -94,7 +95,7 @@ const onSubmitBtn = async e => {
   refs.loader.classList.add('is-loaded');
 
   try {
-    const { hits } = await API.getPhotoByQuery(searchField);
+    const { hits, totalHits } = await API.getPhotoByQuery(searchField);
 
     if (hits.length === 0) {
       messageForUser(
@@ -107,7 +108,13 @@ const onSubmitBtn = async e => {
     const createGallery = hits.map(item => createImgCard(item)).join('');
 
     refs.galleryList.innerHTML = createGallery;
-    addLoadMoreBtn();
+    const quantityEl = refs.galleryList.children.length;
+
+    if (totalHits === quantityEl) {
+      removeLoadMoreBtn();
+    } else {
+      addLoadMoreBtn();
+    }
 
     new SimpleLightbox('.gallery-link', {
       captionsData: 'alt',
