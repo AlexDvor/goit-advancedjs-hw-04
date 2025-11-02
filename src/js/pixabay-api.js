@@ -15,7 +15,7 @@ class Pixabay {
       orientation: 'horizontal',
       safesearch: 'true',
       page: this.currentPage,
-      per_page: 100,
+      per_page: 15,
     };
   }
 

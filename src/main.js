@@ -39,6 +39,13 @@ const addLoadMoreBtn = () => {
   refs.loadMoreBtn.addEventListener('click', onClickLoadMoreBtn);
 };
 
+const getHeightEl = () => {
+  const htmlEl = refs.galleryList.children[0];
+  const { height } = htmlEl.getBoundingClientRect();
+
+  return height;
+};
+
 const onClickLoadMoreBtn = async e => {
   API.incrementPage();
 
@@ -57,6 +64,12 @@ const onClickLoadMoreBtn = async e => {
     refs.galleryList.insertAdjacentHTML('beforeend', createGallery);
 
     const quantityEl = refs.galleryList.children.length;
+
+    window.scrollBy({
+      top: getHeightEl() * 2,
+      left: 0,
+      behavior: 'smooth',
+    });
 
     new SimpleLightbox('.gallery-link', {
       captionsData: 'alt',
