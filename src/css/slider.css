@@ -167,3 +167,29 @@ img {
   line-height: 24px;
   letter-spacing: 0.48px;
 }
+
+.js-load-more-btn {
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #4e75ff;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.64px;
+  border: none;
+  border-radius: 8px;
+}
+
+.js-load-more-btn:hover,
+.js-load-more-btn:focus {
+  background-color: #6c8cff;
+}
+
+.js-load-more-btn.inactive {
+  display: none;
+}

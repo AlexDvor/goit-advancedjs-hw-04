@@ -1,26 +1,35 @@
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://pixabay.com/api';
+
 class Pixabay {
   #API_KEY = '22579303-973b9b71134c76d3c38c0933d';
-  #URL_API = ' https://pixabay.com/api';
+  currentPage = 1;
+  queryField = '';
 
   #getSearchParams(query) {
-    return new URLSearchParams({
+    return {
       key: this.#API_KEY,
       q: query,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: 'true',
-    }).toString();
+      page: this.currentPage,
+      per_page: 15,
+    };
   }
 
-  getPhotoByQuery(query) {
-    return fetch(`${this.#URL_API}/?${this.#getSearchParams(query)}`).then(
-      response => {
-        if (!response.ok) {
-          throw new Error(response.status);
-        }
-        return response.json();
-      }
-    );
+  incrementPage() {
+    this.currentPage++;
+  }
+
+  async getPhotoByQuery(query) {
+    this.queryField = query;
+    const response = await axios.get('', {
+      params: this.#getSearchParams(query),
+    });
+    console.log(response);
+    return response.data;
   }
 }
 

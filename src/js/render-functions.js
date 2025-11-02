@@ -7,10 +7,11 @@ export const createImgCard = ({
   largeImageURL,
   tags,
 }) => {
+  const reformatTag = tags.split(',')[0] || '';
   return `<li class="gallery-item">
       <a class="gallery-link" href=${largeImageURL}>
         <div class='gallery-thumb-image'>
-          <img class="gallery-image" src=${webformatURL} data-source=${largeImageURL} alt=${tags} />
+          <img class="gallery-image" src=${webformatURL} data-source=${largeImageURL} alt=${reformatTag} />
         </div>
         <div class='wrapper-info'>
           <div class='info'>
@@ -22,7 +23,7 @@ export const createImgCard = ({
             <p>${views}</p>
           </div>
           <div class='info'>
-            <p>Coments</p>
+            <p>Comments</p>
             <p>${comments}</p>
           </div>
           <div class='info'>
