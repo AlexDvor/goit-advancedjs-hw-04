@@ -32,7 +32,6 @@ class Pixabay {
     const response = await axios.get('', {
       params: this.#getSearchParams(query),
     });
-    console.log(response);
     return response.data;
   }
 }
